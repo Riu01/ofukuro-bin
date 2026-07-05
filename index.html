@@ -193,6 +193,25 @@ const fmtDate = (d) => `${d.getMonth()+1}/${d.getDate()}(${WD[d.getDay()]})`;
 const toKey = (d) => `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
 const keyToDate = (k) => { const [y,m,dd]=k.split("-").map(Number); return new Date(y,m-1,dd); };
 
+// アプリ内の物価基準（1品あたりの目安価格・円）。食材名の部分一致で判定。
+const PRICE_BOOK = {
+  "じゃがいも":60,"玉ねぎ":50,"たまねぎ":50,"にんじん":40,"人参":40,"牛":300,"豚":250,"鶏":220,"ひき肉":230,
+  "生姜":60,"しょうが":60,"にんにく":60,"キャベツ":180,"レタス":180,"トマト":120,"きゅうり":50,
+  "なす":60,"ピーマン":50,"ほうれん草":150,"もやし":40,"ねぎ":90,"大根":130,"きのこ":150,"しめじ":120,
+  "卵":30,"牛乳":220,"バター":300,"チーズ":250,"米":400,"パン":150,"豆腐":80,"納豆":100,
+  "魚":300,"鮭":200,"さば":220,"えび":350,"ツナ":120,"ベーコン":200,"ソーセージ":250,"ハム":200,
+  "小麦粉":150,"パン粉":120,"パスタ":150,"マカロニ":180,"うどん":120,"醤油":200,"味噌":300,
+  "油":300,"砂糖":200,"塩":150,"みりん":250,"酒":300,"ケチャップ":200,"ソース":250,"マヨネーズ":200,
+};
+const COUNT_UNITS = ["個","本","玉","枚","パック","缶","束","片"];
+function priceFor(name, amt, unit){
+  let base = 150; // 基準（その他）
+  for(const k in PRICE_BOOK){ if(name.includes(k)){ base = PRICE_BOOK[k]; break; } }
+  const n = Number(amt);
+  if(COUNT_UNITS.includes(unit) && n > 1) return base * n; // 数量分を反映
+  return base;
+}
+
 // ---------- App ----------
 function App(){
   const [role, setRole] = useState("student"); // student | parent
@@ -485,7 +504,7 @@ function RecipeForm({ctx, preset="", fulfill=null, inline=false}){
   // 内容を検証して確認画面へ
   function review(){
     if(!name.trim()){ ctx.flash("料理名を入力してください"); return; }
-    const ings = rows.filter(r=>r.n.trim()).map(r=>({n:r.n.trim(), q:makeQ(r), p:Number(r.p)||0}));
+    const ings = rows.filter(r=>r.n.trim()).map(r=>({n:r.n.trim(), q:makeQ(r), p:priceFor(r.n.trim(), r.amt, r.unit)}));
     if(ings.length===0){ ctx.flash("食材は１つ以上登録する必要があります"); return; }
     setConfirm({ id:nid("r"), name:name.trim(), emoji, from:MOM, ingredients:ings });
   }
@@ -505,15 +524,14 @@ function RecipeForm({ctx, preset="", fulfill=null, inline=false}){
           <input value={name} onChange={e=>setName(e.target.value)} placeholder="例）グラタン"/>
         </div>
       </div>
-      <label style={{display:"block",fontSize:12,fontWeight:700,color:"var(--sub)",marginBottom:5}}>必要な食材（自動発注されます）</label>
+      <label style={{display:"block",fontSize:12,fontWeight:700,color:"var(--sub)",marginBottom:5}}>必要な食材（金額はアプリの物価基準で自動計算）</label>
       {rows.map((r,i)=>(
         <div key={i} style={{display:"flex",gap:6,marginBottom:6}}>
-          <input style={{flex:2,minWidth:0}} placeholder="食材" value={r.n} onChange={e=>setRow(i,"n",e.target.value)}/>
-          <input style={{width:44}} placeholder="量" inputMode="numeric" disabled={r.unit==="適量"} value={r.amt} onChange={e=>setRow(i,"amt",e.target.value)}/>
-          <select style={{width:66,padding:"11px 4px"}} value={r.unit} onChange={e=>setRow(i,"unit",e.target.value)}>
+          <input style={{flex:3,minWidth:0}} placeholder="食材" value={r.n} onChange={e=>setRow(i,"n",e.target.value)}/>
+          <input style={{width:52}} placeholder="量" inputMode="numeric" disabled={r.unit==="適量"} value={r.amt} onChange={e=>setRow(i,"amt",e.target.value)}/>
+          <select style={{width:76,padding:"11px 4px"}} value={r.unit} onChange={e=>setRow(i,"unit",e.target.value)}>
             {UNITS.map(u=>(<option key={u} value={u}>{u}</option>))}
           </select>
-          <input style={{width:58}} placeholder="円" inputMode="numeric" value={r.p} onChange={e=>setRow(i,"p",e.target.value)}/>
         </div>
       ))}
       <button className="btn ghost mini" style={{marginBottom:12}} onClick={addRow}>＋ 食材を追加</button>

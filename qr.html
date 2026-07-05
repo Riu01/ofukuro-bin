@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>おふくろ便 ｜ 公開リンク & QR</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<style>
+  body{margin:0;font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    background:#fbf6ee;color:#3a2f24;display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px;}
+  .card{background:#fff;border:1px solid #efe7d9;border-radius:24px;padding:34px 30px;text-align:center;max-width:380px;width:100%;box-shadow:0 18px 44px rgba(180,150,110,.15);}
+  .brand{font-weight:900;color:#e8794a;font-size:22px;letter-spacing:.5px;}
+  .brand span{display:block;font-size:12px;color:#8a7d6c;font-weight:600;margin-top:2px;}
+  h1{font-size:16px;margin:18px 0 6px;}
+  .qr{display:inline-block;padding:16px;background:#fff;border:1px solid #efe7d9;border-radius:16px;margin:10px 0 16px;}
+  .url{font-size:13px;word-break:break-all;background:#fbf6ee;border:1px dashed #e8b79a;border-radius:12px;padding:12px;color:#8a5a3c;font-weight:700;}
+  a.btn{display:block;margin-top:16px;text-decoration:none;background:linear-gradient(120deg,#e8794a,#f0a86e);color:#fff;font-weight:800;padding:14px;border-radius:14px;}
+  .note{font-size:11px;color:#8a7d6c;margin-top:14px;line-height:1.6;}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="brand">おふくろ便<span>仕送りごはん</span></div>
+    <h1>📱 スマホで読み取って開く</h1>
+    <div class="qr"><div id="qr"></div></div>
+    <div class="url" id="url"></div>
+    <a class="btn" id="open" target="_blank">▶ このデバイスで開く</a>
+    <div class="note">※ 一時公開リンクです。配信元PC/セッションを閉じると停止します。</div>
+  </div>
+<script>
+  var URL_ = "https://systems-mature-car-knight.trycloudflare.com/";
+  document.getElementById("url").textContent = URL_;
+  document.getElementById("open").href = URL_;
+  new QRCode(document.getElementById("qr"), { text: URL_, width: 220, height: 220, colorDark:"#3a2f24", colorLight:"#ffffff" });
+</script>
+</body>
+</html>

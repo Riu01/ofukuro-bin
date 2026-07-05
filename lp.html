@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>おふくろ便 ｜ 離れていても、食卓はつながっている。</title>
+<style>
+  :root{
+    --ink:#3a2f24; --sub:#8a7d6c; --bg:#fbf6ee;
+    --accent:#e8794a; --accent2:#f0a86e; --cream:#fff8ef;
+    --line:#efe7d9; --green:#7aa85a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;
+    color:var(--ink); background:var(--bg); overflow-x:hidden; line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:0 22px;}
+  .reveal{opacity:0;transform:translateY(28px);transition:all .9s cubic-bezier(.2,.7,.2,1);}
+  .reveal.in{opacity:1;transform:none;}
+
+  /* ===== nav ===== */
+  nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;
+      padding:14px 22px;backdrop-filter:blur(10px);background:rgba(251,246,238,.72);}
+  nav .brand{font-weight:900;font-size:18px;letter-spacing:.5px;color:var(--accent);}
+  nav .brand span{font-size:11px;color:var(--sub);font-weight:600;margin-left:6px;letter-spacing:0;}
+  nav a.cta{background:var(--accent);color:#fff;text-decoration:none;font-weight:800;font-size:13px;
+      padding:9px 18px;border-radius:999px;box-shadow:0 6px 16px rgba(232,121,74,.35);}
+
+  /* ===== hero ===== */
+  .hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:center;
+      text-align:center;padding:120px 22px 80px;overflow:hidden;}
+  .hero .glow{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55;z-index:0;}
+  .g1{width:340px;height:340px;background:#ffd9b8;top:-40px;left:-60px;}
+  .g2{width:300px;height:300px;background:#ffe0c2;bottom:0;right:-40px;animation:float 9s ease-in-out infinite;}
+  .g3{width:220px;height:220px;background:#ffeede;top:40%;left:55%;animation:float 11s ease-in-out infinite reverse;}
+  @keyframes float{50%{transform:translateY(-26px);}}
+  .hero .steam{font-size:64px;position:relative;z-index:1;animation:steam 3.4s ease-in-out infinite;filter:drop-shadow(0 8px 14px rgba(232,121,74,.25));}
+  @keyframes steam{0%,100%{transform:translateY(0) rotate(-2deg);}50%{transform:translateY(-8px) rotate(2deg);}}
+  .hero h1{position:relative;z-index:1;font-size:clamp(30px,7vw,52px);font-weight:900;line-height:1.35;margin:18px 0 10px;letter-spacing:.5px;}
+  .hero h1 .em{background:linear-gradient(120deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent;}
+  .hero p.lead{position:relative;z-index:1;font-size:clamp(15px,3.6vw,19px);color:var(--sub);max-width:560px;margin:0 auto 30px;}
+  .hero .btns{position:relative;z-index:1;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:800;border-radius:999px;padding:15px 30px;font-size:15px;cursor:pointer;border:0;}
+  .btn.primary{background:linear-gradient(120deg,var(--accent),var(--accent2));color:#fff;box-shadow:0 12px 28px rgba(232,121,74,.4);}
+  .btn.primary:hover{transform:translateY(-2px);}
+  .btn.ghost{background:#fff;color:var(--accent);border:1.5px solid var(--accent);}
+  .btn{transition:transform .2s;}
+  .scrolldown{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:1;color:var(--sub);font-size:12px;animation:bob 2s infinite;}
+  @keyframes bob{50%{transform:translate(-50%,8px);}}
+
+  /* ===== story ===== */
+  section{padding:90px 0;}
+  .kicker{color:var(--accent);font-weight:900;font-size:13px;letter-spacing:2px;margin-bottom:12px;}
+  h2{font-size:clamp(24px,5.4vw,36px);font-weight:900;line-height:1.4;margin-bottom:18px;}
+  .story{background:linear-gradient(180deg,var(--cream),var(--bg));text-align:center;}
+  .story p{font-size:clamp(15px,3.6vw,18px);color:var(--sub);max-width:600px;margin:0 auto 14px;}
+  .story .big{color:var(--ink);font-weight:800;font-size:clamp(19px,4.6vw,26px);}
+
+  /* ===== steps ===== */
+  .steps{display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:36px;}
+  .step{background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px 24px;text-align:center;box-shadow:0 10px 30px rgba(180,150,110,.08);position:relative;}
+  .step .no{position:absolute;top:-14px;left:24px;background:var(--accent);color:#fff;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;box-shadow:0 6px 14px rgba(232,121,74,.4);}
+  .step .ico{font-size:44px;margin-bottom:12px;}
+  .step h3{font-size:18px;margin-bottom:8px;}
+  .step p{color:var(--sub);font-size:14px;}
+
+  /* ===== features ===== */
+  .features{background:linear-gradient(180deg,#fff6ec,#fbf6ee);}
+  .feat{display:flex;gap:20px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:22px;padding:26px;margin-bottom:20px;box-shadow:0 8px 24px rgba(180,150,110,.07);}
+  .feat:nth-child(even){flex-direction:row-reverse;text-align:right;}
+  .feat .fico{font-size:52px;flex-shrink:0;width:92px;height:92px;border-radius:24px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#ffe6d3,#ffd3b6);}
+  .feat h3{font-size:20px;margin-bottom:8px;}
+  .feat p{color:var(--sub);font-size:15px;}
+
+  /* ===== quote ===== */
+  .quotes{text-align:center;}
+  .qgrid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:30px;}
+  .q{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px 22px;box-shadow:0 8px 22px rgba(180,150,110,.07);}
+  .q .qt{font-size:15px;line-height:1.8;margin-bottom:14px;}
+  .q .qa{display:flex;align-items:center;gap:10px;justify-content:center;}
+  .q .av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;}
+  .q .name{font-size:13px;color:var(--sub);font-weight:700;}
+
+  /* ===== final cta ===== */
+  .final{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;text-align:center;border-radius:36px;margin:60px 22px;padding:70px 26px;position:relative;overflow:hidden;max-width:920px;}
+  .final::before{content:"🍚🍜🍳🥘🍱";position:absolute;font-size:80px;opacity:.12;top:10px;left:0;right:0;letter-spacing:24px;}
+  .final h2{color:#fff;}
+  .final p{opacity:.95;font-size:16px;max-width:480px;margin:0 auto 26px;}
+  .final .btn.primary{background:#fff;color:var(--accent);box-shadow:0 12px 30px rgba(0,0,0,.2);}
+
+  footer{text-align:center;padding:40px 22px 60px;color:var(--sub);font-size:13px;}
+  footer .fbrand{font-weight:900;color:var(--accent);font-size:16px;margin-bottom:6px;}
+</style>
+</head>
+<body>
+
+<nav class="reveal in">
+  <div class="brand">おふくろ便<span>仕送りごはん</span></div>
+  <a class="cta" href="#start">はじめる</a>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+  <div class="steam">🍲</div>
+  <h1>離れていても、<br/><span class="em">食卓はつながっている。</span></h1>
+  <p class="lead">はじめての一人暮らし。慣れない自炊。<br/>お母さんのレシピが、そのまま食材になって届く。<br/>作った料理は、写真でおうちへ。</p>
+  <div class="btns">
+    <a class="btn primary" href="#start">▶ アプリを体験する</a>
+    <a class="btn ghost" href="#how">仕組みを見る</a>
+  </div>
+  <div class="scrolldown">▼ scroll</div>
+</header>
+
+<!-- STORY -->
+<section class="story">
+  <div class="wrap reveal">
+    <div class="kicker">A STORY</div>
+    <h2>「ちゃんと食べてる？」<br/>その一言に、応えたい。</h2>
+    <p class="big">仕送りは届く。でも、心配は消えない。</p>
+    <p>コンビニ弁当が続く毎日。レシピを見ても、何を買えばいいか分からない。<br/>親は、遠くから見守ることしかできない——。</p>
+    <p class="big" style="margin-top:22px;">おふくろ便は、その距離を“ごはん”で埋めます。</p>
+  </div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center;">
+      <div class="kicker">HOW IT WORKS</div>
+      <h2>選ぶだけ。あとは、届く。</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal"><div class="no">1</div><div class="ico">📖</div><h3>レシピを選ぶ</h3><p>お母さんが登録した「おふくろの味」から、食べたい一品をタップ。</p></div>
+      <div class="step reveal"><div class="no">2</div><div class="ico">🚚</div><h3>食材が自動で届く</h3><p>必要な食材だけを、生活圏のスーパーが希望日までにまとめてお届け。買い出し不要。</p></div>
+      <div class="step reveal"><div class="no">3</div><div class="ico">📸</div><h3>写真でつながる</h3><p>作った料理をパチリ。おうちへ送れば「美味しそう！」がすぐ返ってくる。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center;">
+      <div class="kicker">FEATURES</div>
+      <h2>自炊のハードルを、ぜんぶ下げた。</h2>
+    </div>
+    <div style="margin-top:36px;">
+      <div class="feat reveal"><div class="fico">🛒</div><div><h3>食材は、選ばない</h3><p>「何を買えばいい？」はもう不要。レシピを選ぶと、必要な食材と分量が自動で発注されます。</p></div></div>
+      <div class="feat reveal"><div class="fico">💌</div><div><h3>「あの料理が食べたい」</h3><p>お母さんへリクエスト。レシピが登録されれば、そのまま食材になって届きます。</p></div></div>
+      <div class="feat reveal"><div class="fico">💴</div><div><h3>仕送りは、ごはんになる</h3><p>親が送るのはお金だけじゃない。食材代として、まっすぐ食卓に届きます。</p></div></div>
+      <div class="feat reveal"><div class="fico">💬</div><div><h3>毎日の“できたよ”</h3><p>料理写真とメッセージで、離れていても食卓を共有。親子の会話が、自然と増える。</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section class="quotes">
+  <div class="wrap reveal">
+    <div class="kicker">VOICES</div>
+    <h2>食卓の、小さな物語。</h2>
+    <div class="qgrid">
+      <div class="q reveal"><div class="qt">「初めて肉じゃが作れた。母さんに写真送ったら、めっちゃ喜んでた。」</div><div class="qa"><div class="av" style="background:#6ea9d9">ゆ</div><div class="name">大学1年・ゆうた</div></div></div>
+      <div class="q reveal"><div class="qt">「息子がちゃんと食べてるって分かるだけで、安心する。レシピ送るのが楽しい。」</div><div class="qa"><div class="av" style="background:#d98cae">母</div><div class="name">お母さん</div></div></div>
+      <div class="q reveal"><div class="qt">「買い物に行かなくていいのが神。しかも母の味そのまま。」</div><div class="qa"><div class="av" style="background:#7aa85a">み</div><div class="name">専門学校・みなみ</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="start" style="padding:20px 0;">
+  <div class="final reveal">
+    <h2>今日の晩ごはんは、<br/>おふくろの味。</h2>
+    <p>レシピを選ぶだけで、食材が届く。作れば、おうちとつながる。<br/>あなたの自炊生活を、はじめよう。</p>
+    <a class="btn primary" href="index.html">▶ アプリを開く</a>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">おふくろ便</div>
+  離れて暮らす学生と、その家族の食卓をつなぐ仕送りごはんサービス。<br/>
+  <small style="opacity:.7">※ これはプロトタイプのランディングページです。</small>
+</footer>
+
+<script>
+  const io = new IntersectionObserver((es)=>{
+    es.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add("in"), (i%3)*90); io.unobserve(e.target);} });
+  },{threshold:.14});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+</script>
+</body>
+</html>

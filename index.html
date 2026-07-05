@@ -257,7 +257,7 @@ function App(){
       setRequests(rs=>rs.map(r=>r.id===fulfillReqId?{...r,status:"answered"}:r));
     }
     flash(`「${rc.name}」のレシピを登録しました🍳`);
-    setTab("home");
+    setTab("menu");
   }
 
   // フィード投稿
@@ -471,6 +471,7 @@ function RecipeForm({ctx, preset="", fulfill=null, inline=false}){
   const [name,setName]=useState(preset);
   const [emoji,setEmoji]=useState("🍳");
   const [rows,setRows]=useState([{n:"",amt:"",unit:"個",p:""},{n:"",amt:"",unit:"個",p:""}]);
+  const [confirm,setConfirm]=useState(null); // 確認中のレシピ
 
   function setRow(i,k,v){ setRows(rs=>rs.map((r,idx)=>idx===i?{...r,[k]:v}:r)); }
   function addRow(){ setRows(rs=>[...rs,{n:"",amt:"",unit:"個",p:""}]); }
@@ -481,10 +482,18 @@ function RecipeForm({ctx, preset="", fulfill=null, inline=false}){
     return r.amt.trim()+r.unit;
   }
 
-  function submit(){
+  // 内容を検証して確認画面へ
+  function review(){
+    if(!name.trim()){ ctx.flash("料理名を入力してください"); return; }
     const ings = rows.filter(r=>r.n.trim()).map(r=>({n:r.n.trim(), q:makeQ(r), p:Number(r.p)||0}));
-    if(!name.trim()||ings.length===0) return;
-    ctx.addRecipe({ id:nid("r"), name:name.trim(), emoji, from:MOM, ingredients:ings }, fulfill);
+    if(ings.length===0){ ctx.flash("食材は１つ以上登録する必要があります"); return; }
+    setConfirm({ id:nid("r"), name:name.trim(), emoji, from:MOM, ingredients:ings });
+  }
+
+  // 確認後に本登録
+  function doRegister(){
+    ctx.addRecipe(confirm, fulfill);
+    setConfirm(null);
   }
 
   const body = (
@@ -508,14 +517,35 @@ function RecipeForm({ctx, preset="", fulfill=null, inline=false}){
         </div>
       ))}
       <button className="btn ghost mini" style={{marginBottom:12}} onClick={addRow}>＋ 食材を追加</button>
-      <button className="btn" disabled={!name.trim()} onClick={submit}>
+      <button className="btn" onClick={review}>
         {fulfill?"このレシピで応える":"レシピを登録"}
       </button>
     </>
   );
 
-  if(inline) return <div style={{padding:"6px 0 12px"}}>{body}</div>;
-  return <div className="card"><h3>🍳 レシピを登録して食材を届ける</h3>{body}</div>;
+  const confirmPanel = confirm && (
+    <>
+      <div style={{textAlign:"center",padding:"2px 0 12px"}}>
+        <div style={{fontSize:40}}>{confirm.emoji}</div>
+        <div style={{fontWeight:800,fontSize:18}}>{confirm.name}</div>
+        <div style={{fontSize:12,color:"var(--sub)",marginTop:2}}>この内容で登録しますか？</div>
+      </div>
+      <ul className="ing-list">
+        {confirm.ingredients.map((i,idx)=>(<li key={idx}><span>・{i.n}（{i.q}）</span><span>¥{i.p}</span></li>))}
+        <li style={{borderTop:"1px solid var(--line)",marginTop:4,paddingTop:6,fontWeight:700,color:"var(--ink)"}}>
+          <span>食材代 合計</span><span>¥{confirm.ingredients.reduce((s,i)=>s+i.p,0).toLocaleString()}</span>
+        </li>
+      </ul>
+      <div style={{display:"flex",gap:8,marginTop:14}}>
+        <button className="btn ghost" onClick={()=>setConfirm(null)}>修正する</button>
+        <button className="btn" onClick={doRegister}>この内容で登録</button>
+      </div>
+    </>
+  );
+
+  const content = confirm ? confirmPanel : body;
+  if(inline) return <div style={{padding:"6px 0 12px"}}>{content}</div>;
+  return <div className="card"><h3>🍳 {confirm?"レシピの確認":"レシピを登録して食材を届ける"}</h3>{content}</div>;
 }
 
 // ---------- Shared: Orders ----------
